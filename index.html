@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thalexa - Decentralized Supply Chain</title>
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <!-- Additional favicon sizes for different devices -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+    <!-- Optional: Manifest for PWA -->
+    <link rel="manifest" href="/site.webmanifest">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --dark-color: #212529;
+            --light-color: #f8f9fa;
+            --sui-purple: #6fbcf0;
+            --sui-blue: #1e64f0;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-color);
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            background-color: white;
+            min-height: 100vh;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--sui-blue) !important;
+        }
+
+        .nav-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-color);
+            background-color: var(--light-color);
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .nav-icon-btn:hover,
+        .nav-icon-btn.active {
+            background-color: var(--sui-blue);
+            color: white;
+        }
+
+        .wallet-connect-btn {
+            background: linear-gradient(135deg, var(--sui-purple), var(--sui-blue));
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .screen {
+            display: none;
+            padding: 20px;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #e9ecef;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: var(--sui-blue);
+            border-color: var(--sui-blue);
+        }
+
+        .btn-outline-primary {
+            color: var(--sui-blue);
+            border-color: var(--sui-blue);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--sui-blue);
+            border-color: var(--sui-blue);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(111, 188, 240, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: var(--sui-blue);
+            font-size: 22px;
+        }
+
+        .product-track-step {
+            position: relative;
+            padding-left: 30px;
+            padding-bottom: 30px;
+        }
+
+        .product-track-step:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 30px;
+            bottom: -10px;
+            width: 2px;
+            background-color: #e9ecef;
+        }
+
+        .product-track-step.active::before {
+            background-color: var(--sui-blue);
+        }
+
+        .product-track-step .step-icon {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .product-track-step.active .step-icon {
+            background-color: var(--sui-blue);
+            color: white;
+        }
+
+        .product-track-step.completed .step-icon {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            background-color: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-btn:hover {
+            color: var(--dark-color);
+        }
+
+        .wallet-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background-color: rgba(111, 188, 240, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--sui-blue);
+            font-size: 20px;
+        }
+
+        .login-card {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .phrase-word {
+            display: inline-block;
+            background-color: #f8f9fa;
+            padding: 8px 12px;
+            margin: 5px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        .network-badge {
+            background-color: rgba(111, 188, 240, 0.1);
+            color: var(--sui-blue);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-top: 1px solid #e9ecef;
+            padding: 10px 0;
+            display: none;
+            z-index: 1000;
+        }
+
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .mobile-nav-item.active {
+            color: var(--sui-blue);
+        }
+
+        .mobile-nav-item i {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .dropdown-item {
+            border-radius: 6px;
+            padding: 8px 12px;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                box-shadow: none;
+            }
+
+            .mobile-bottom-nav {
+                display: flex;
+                justify-content: space-around;
+            }
+
+            .screen {
+                padding-bottom: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Top Navigation -->
+        <nav class="navbar navbar-expand-lg border-bottom">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#" onclick="showScreen('home')">
+                    <img src="logo.png" alt="Thalexa Logo" height="30" class="me-2">
+                    Thalexa
+                </a>
+
+                <div class="d-flex align-items-center d-none d-lg-flex">
+                    <!-- Navigation for desktop -->
+                    <div class="d-flex gap-2 me-4">
+                        <button class="nav-icon-btn" onclick="showScreen('home')" id="nav-home">
+                            <i class="bi bi-house"></i>
+                        </button>
+                        <button class="nav-icon-btn" onclick="showScreen('wallet')" id="nav-wallet">
+                            <i class="bi bi-wallet2"></i>
+                        </button>
+                        <button class="nav-icon-btn" onclick="showScreen('tracking')" id="nav-tracking">
+                            <i class="bi bi-geo-alt"></i>
+                        </button>
+                        <button class="nav-icon-btn" onclick="showScreen('contracts')" id="nav-contracts">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </button>
+                        <button class="nav-icon-btn" onclick="showScreen('profile')" id="nav-profile">
+                            <i class="bi bi-person"></i>
+                        </button>
+                    </div>
+
+                    <!-- Wallet Connection Status -->
+                    <div class="dropdown">
+                        <button class="wallet-connect-btn dropdown-toggle" type="button" id="walletDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-wallet2"></i>
+                            <span id="wallet-status">Connect Wallet</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="walletDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="showScreen('login')"><i
+                                        class="bi bi-box-arrow-in-right me-2"></i>Login with Wallet</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="showScreen('create-wallet')"><i
+                                        class="bi bi-plus-circle me-2"></i>Create New Wallet</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="showScreen('import-wallet')"><i
+                                        class="bi bi-download me-2"></i>Import Wallet</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#" onclick="disconnectWallet()"><i
+                                        class="bi bi-power me-2"></i>Disconnect</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Mobile menu toggle -->
+                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#mobileNavbar">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <!-- Mobile Navigation Menu -->
+
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main>
+            <!-- Home Screen -->
+            <div id="home-screen" class="screen active">
+                <div class="container-fluid py-4">
+                    <div class="row align-items-center mb-5">
+                        <div class="col-lg-6">
+                            <h1 class="display-5 fw-bold mb-3">Decentralized Supply Chain Management</h1>
+                            <p class="lead mb-4">Thalexa ensures speed, security, trust, transparency, and traceability
+                                in product movement from manufacturers to end-users using Sui blockchain.</p>
+                            <div class="d-flex flex-wrap gap-3">
+                                <button class="btn btn-primary btn-lg" onclick="showScreen('login')">
+                                    <i class="bi bi-wallet2 me-2"></i>Connect Wallet
+                                </button>
+                                <button class="btn btn-outline-primary btn-lg" onclick="showScreen('tracking')">
+                                    <i class="bi bi-geo-alt me-2"></i>Track Product
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card border-0 bg-light">
+                                <div class="card-body p-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="network-badge">SUI MAINNET</span>
+                                        <span class="text-muted">Live</span>
+                                    </div>
+                                    <h5 class="card-title">Active Supply Chain Contracts</h5>
+                                    <div class="d-flex align-items-center my-4">
+                                        <div class="flex-grow-1">
+                                            <h2 class="mb-0">1,247</h2>
+                                            <small class="text-muted">Products Tracked</small>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h2 class="mb-0">892</h2>
+                                            <small class="text-muted">Smart Contracts</small>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h2 class="mb-0">$4.2M</h2>
+                                            <small class="text-muted">In Escrow</small>
+                                        </div>
+                                    </div>
+                                    <div class="progress mb-3" style="height: 8px;">
+                                        <div class="progress-bar bg-success" style="width: 85%"></div>
+                                    </div>
+                                    <p class="text-muted small mb-0">85% of shipments delivered on time with automated
+                                        payment release</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-5">
+                        <h3 class="mb-4">Core Features</h3>
+                        <div class="col-md-6 col-lg-3 mb-4">
+                            <div class="card h-100 border-0">
+                                <div class="card-body">
+                                    <div class="feature-icon">
+                                        <i class="bi bi-shield-check"></i>
+                                    </div>
+                                    <h5>Blockchain Transparency</h5>
+                                    <p class="card-text">Every product has a digital on-chain identity ensuring complete
+                                        traceability.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3 mb-4">
+                            <div class="card h-100 border-0">
+                                <div class="card-body">
+                                    <div class="feature-icon">
+                                        <i class="bi bi-file-earmark-lock"></i>
+                                    </div>
+                                    <h5>Smart Contract Escrow</h5>
+                                    <p class="card-text">Funds automatically released on delivery confirmation between
+                                        parties.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3 mb-4">
+                            <div class="card h-100 border-0">
+                                <div class="card-body">
+                                    <div class="feature-icon">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </div>
+                                    <h5>Product Tracking</h5>
+                                    <p class="card-text">Track products from manufacturing → logistics → retail →
+                                        consumer.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-3 mb-4">
+                            <div class="card h-100 border-0">
+                                <div class="card-body">
+                                    <div class="feature-icon">
+                                        <i class="bi bi-wallet2"></i>
+                                    </div>
+                                    <h5>Multi-wallet Support</h5>
+                                    <p class="card-text">Works with Phantom, Solflare, Safepal, Uniswap and other
+                                        wallets.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    Recent Supply Chain Activity
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product ID</th>
+                                                    <th>Status</th>
+                                                    <th>Location</th>
+                                                    <th>Escrow Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr onclick="showScreen('tracking-detail')" style="cursor: pointer;">
+                                                    <td><span class="fw-semibold">#SC-7892</span></td>
+                                                    <td><span class="badge bg-warning">In Transit</span></td>
+                                                    <td>Shanghai Port</td>
+                                                    <td>$12,500</td>
+                                                </tr>
+                                                <tr onclick="showScreen('tracking-detail')" style="cursor: pointer;">
+                                                    <td><span class="fw-semibold">#SC-7891</span></td>
+                                                    <td><span class="badge bg-success">Delivered</span></td>
+                                                    <td>New York Warehouse</td>
+                                                    <td>$8,200</td>
+                                                </tr>
+                                                <tr onclick="showScreen('tracking-detail')" style="cursor: pointer;">
+                                                    <td><span class="fw-semibold">#SC-7890</span></td>
+                                                    <td><span class="badge bg-primary">Manufacturing</span></td>
+                                                    <td>Factory #4</td>
+                                                    <td>$25,000</td>
+                                                </tr>
+                                                <tr onclick="showScreen('tracking-detail')" style="cursor: pointer;">
+                                                    <td><span class="fw-semibold">#SC-7889</span></td>
+                                                    <td><span class="badge bg-info">Quality Check</span></td>
+                                                    <td>Distribution Center</td>
+                                                    <td>$15,750</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    Supported Industries
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        <span class="badge bg-primary p-2">Agriculture</span>
+                                        <span class="badge bg-success p-2">Pharma</span>
+                                        <span class="badge bg-warning p-2">Luxury Goods</span>
+                                        <span class="badge bg-info p-2">Logistics</span>
+                                        <span class="badge bg-secondary p-2">Electronics</span>
+                                        <span class="badge bg-dark p-2">Automotive</span>
+                                    </div>
+                                    <p class="card-text">Thalexa is cross-industry ready, providing transparency and
+                                        trust across various supply chain ecosystems.</p>
+                                    <button class="btn btn-outline-primary" onclick="showScreen('contracts')">
+                                        <i class="bi bi-plus-circle me-2"></i>Create New Contract
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Screen -->
+            <div id="login-screen" class="screen">
+                <div class="container py-4">
+                    <a href="#" class="back-btn" onclick="showScreen('home')">
+                        <i class="bi bi-arrow-left"></i> Back to Home
+                    </a>
+
+                    <div class="login-card">
+                        <div class="card">
+                            <div class="card-body p-4">
+                                <div class="text-center mb-4">
+                                    <div class="wallet-icon mx-auto mb-3">
+                                        <i class="bi bi-wallet2"></i>
+                                    </div>
+                                    <h3>Connect Your Wallet</h3>
+                                    <p class="text-muted">Choose a wallet to connect to Thalexa</p>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Select Wallet Type</label>
+                                    <div class="list-group">
+                                        <button class="list-group-item list-group-item-action d-flex align-items-center"
+                                            onclick="connectWallet('phantom')">
+                                            <div class="me-3">
+                                                <i class="bi bi-wallet2" style="font-size: 24px; color: #ab9ff2;"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0">Phantom Wallet</h6>
+                                                <small class="text-muted">Connect using Phantom browser
+                                                    extension</small>
+                                            </div>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </button>
+
+                                        <button
+                                            class="list-group-item list-group-item-action d-flex align-items-center mt-2"
+                                            onclick="connectWallet('solflare')">
+                                            <div class="me-3">
+                                                <i class="bi bi-lightning-charge"
+                                                    style="font-size: 24px; color: #ff6b35;"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0">Solflare Wallet</h6>
+                                                <small class="text-muted">Connect using Solflare wallet</small>
+                                            </div>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </button>
+
+                                        <button
+                                            class="list-group-item list-group-item-action d-flex align-items-center mt-2"
+                                            onclick="connectWallet('safepal')">
+                                            <div class="me-3">
+                                                <i class="bi bi-shield-check"
+                                                    style="font-size: 24px; color: #4cd964;"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0">SafePal Wallet</h6>
+                                                <small class="text-muted">Connect using SafePal hardware wallet</small>
+                                            </div>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </button>
+
+                                        <button
+                                            class="list-group-item list-group-item-action d-flex align-items-center mt-2"
+                                            onclick="showScreen('create-wallet')">
+                                            <div class="me-3">
+                                                <i class="bi bi-plus-circle"
+                                                    style="font-size: 24px; color: var(--sui-blue);"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0">Create New Wallet</h6>
+                                                <small class="text-muted">Generate a new wallet on Sui
+                                                    blockchain</small>
+                                            </div>
+                                            <i class="bi bi-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <p class="text-muted small">
+                                        By connecting your wallet, you agree to Thalexa's <a href="#">Terms of
+                                            Service</a> and <a href="#">Privacy Policy</a>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Wallet Screen -->
+            <div id="create-wallet-screen" class="screen">
+                <div class="container py-4">
+                    <a href="#" class="back-btn" onclick="showScreen('login')">
+                        <i class="bi bi-arrow-left"></i> Back to Login
+                    </a>
+
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="mb-0">Create New Wallet</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-warning" role="alert">
+                                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                        <strong>Important:</strong> Save your recovery phrase in a secure location.
+                                        Never share it with anyone. Thalexa cannot recover your wallet if you lose your
+                                        recovery phrase.
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Wallet Name</label>
+                                        <input type="text" class="form-control" id="wallet-name"
+                                            placeholder="My Thalexa Wallet">
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label d-flex justify-content-between">
+                                            <span>Recovery Phrase</span>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="generatePhrase()">
+                                                <i class="bi bi-arrow-clockwise"></i> Generate New
+                                            </button>
+                                        </label>
+                                        <div class="border rounded p-3 bg-light" id="recovery-phrase">
+                                            <!-- Recovery phrase will be generated here -->
+                                            <div class="text-center text-muted py-4">
+                                                Click "Generate New" to create a recovery phrase
+                                            </div>
+                                        </div>
+                                        <div class="form-check mt-2">
+                                            <input class="form-check-input" type="checkbox" id="confirm-phrase-saved">
+                                            <label class="form-check-label" for="confirm-phrase-saved">
+                                                I have saved my recovery phrase in a secure location
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Set Password</label>
+                                        <input type="password" class="form-control" id="wallet-password"
+                                            placeholder="At least 8 characters">
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Confirm Password</label>
+                                        <input type="password" class="form-control" id="wallet-password-confirm"
+                                            placeholder="Re-enter your password">
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary" onclick="createWallet()">
+                                            <i class="bi bi-wallet2 me-2"></i> Create Wallet
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="showScreen('import-wallet')">
+                                            <i class="bi bi-download me-2"></i> Import Existing Wallet
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Import Wallet Screen -->
+            <div id="import-wallet-screen" class="screen">
+                <div class="container py-4">
+                    <a href="#" class="back-btn" onclick="showScreen('login')">
+                        <i class="bi bi-arrow-left"></i> Back to Login
+                    </a>
+
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="mb-0">Import Wallet</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <label class="form-label">Recovery Phrase</label>
+                                        <textarea class="form-control" id="import-phrase" rows="3"
+                                            placeholder="Enter your 12 or 24 word recovery phrase"></textarea>
+                                        <div class="form-text">Enter your recovery phrase separated by spaces</div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Wallet Name (Optional)</label>
+                                        <input type="text" class="form-control" id="import-wallet-name"
+                                            placeholder="My Imported Wallet">
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label">Set Password</label>
+                                        <input type="password" class="form-control" id="import-password"
+                                            placeholder="At least 8 characters">
+                                    </div>
+
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary" onclick="importWallet()">
+                                            <i class="bi bi-download me-2"></i> Import Wallet
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wallet Screen -->
+            <div id="wallet-screen" class="screen">
+                <div class="container py-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>Wallet</h3>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="showScreen('send-assets')">
+                                <i class="bi bi-send me-2"></i> Send
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="showScreen('receive-assets')">
+                                <i class="bi bi-download me-2"></i> Receive
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <h5 class="card-title mb-1" id="connected-wallet-name">My Thalexa Wallet
+                                            </h5>
+                                            <div class="wallet-address" id="connected-wallet-address">
+                                                0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
+                                            </div>
+                                        </div>
+                                        <span class="network-badge">SUI</span>
+                                    </div>
+
+                                    <div class="text-center py-4">
+                                        <h1 class="display-4 fw-bold mb-0" id="wallet-balance">0.00</h1>
+                                        <p class="text-muted">SUI Balance</p>
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <small class="text-muted">≈ $<span id="usd-balance">0.00</span> USD</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center gap-3 mt-3">
+                                        <button class="btn btn-outline-primary" onclick="showScreen('send-assets')">
+                                            <i class="bi bi-send me-2"></i> Send
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="showScreen('receive-assets')">
+                                            <i class="bi bi-download me-2"></i> Receive
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="showScreen('swap-assets')">
+                                            <i class="bi bi-arrow-left-right me-2"></i> Swap
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Recent Transactions</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h6 class="mb-0">Sent to Manufacturer</h6>
+                                                    <small class="text-muted">2 hours ago</small>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="text-danger">-50.25 SUI</div>
+                                                    <small class="text-muted">Contract: #SC-7892</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h6 class="mb-0">Received from Retailer</h6>
+                                                    <small class="text-muted">1 day ago</small>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="text-success">+120.75 SUI</div>
+                                                    <small class="text-muted">Contract: #SC-7891</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h6 class="mb-0">Escrow Release</h6>
+                                                    <small class="text-muted">3 days ago</small>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="text-success">+8,200.00 SUI</div>
+                                                    <small class="text-muted">Contract completed</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Assets</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="wallet-icon me-3">
+                                                <i class="bi bi-currency-bitcoin"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">SUI</h6>
+                                                <small class="text-muted">Sui Native Token</small>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="fw-semibold" id="sui-balance">0.00</div>
+                                            <small class="text-muted">$<span id="sui-usd-value">0.00</span></small>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="wallet-icon me-3">
+                                                <i class="bi bi-box-seam"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">THLX</h6>
+                                                <small class="text-muted">Thalexa Token</small>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="fw-semibold">125.50</div>
+                                            <small class="text-muted">$25.10</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="wallet-icon me-3">
+                                                <i class="bi bi-droplet"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">USDC</h6>
+                                                <small class="text-muted">USD Coin</small>
+                                            </div>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="fw-semibold">500.00</div>
+                                            <small class="text-muted">$500.00</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Connected DApps</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="wallet-icon me-3 bg-success bg-opacity-10 text-success">
+                                                <i class="bi bi-box-seam"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Thalexa</h6>
+                                                <small class="text-muted">Supply Chain</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-success">Connected</span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="wallet-icon me-3 bg-primary bg-opacity-10 text-primary">
+                                                <i class="bi bi-arrow-left-right"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Suiswap</h6>
+                                                <small class="text-muted">Decentralized Exchange</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-secondary">Not Connected</span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="wallet-icon me-3 bg-warning bg-opacity-10 text-warning">
+                                                <i class="bi bi-bank"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">SuiLend</h6>
+                                                <small class="text-muted">Lending Protocol</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-secondary">Not Connected</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Tracking Screen -->
+            <div id="tracking-screen" class="screen">
+                <div class="container py-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>Product Tracking</h3>
+                        <button class="btn btn-primary" onclick="showScreen('new-tracking')">
+                            <i class="bi bi-plus-circle me-2"></i> Track New Product
+                        </button>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">Track by Product ID</h5>
+                                    <div class="mb-3">
+                                        <label for="product-id" class="form-label">Enter Product ID</label>
+                                        <input type="text" class="form-control" id="product-id"
+                                            placeholder="e.g., #SC-7892">
+                                    </div>
+                                    <button class="btn btn-primary w-100" onclick="trackProduct()">
+                                        <i class="bi bi-search me-2"></i> Track Product
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Active Shipments</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="list-group list-group-flush">
+                                        <a href="#"
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                            onclick="showScreen('tracking-detail')">
+                                            <div>
+                                                <h6 class="mb-0">Medical Supplies - Batch #PH-456</h6>
+                                                <small class="text-muted">From: PharmaCorp | To: MedSupply Chain</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-warning">In Transit</span>
+                                                <div class="text-muted small mt-1">Shanghai Port → Los Angeles</div>
+                                            </div>
+                                        </a>
+                                        <a href="#"
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                            onclick="showScreen('tracking-detail')">
+                                            <div>
+                                                <h6 class="mb-0">Organic Coffee Beans - Lot #AG-789</h6>
+                                                <small class="text-muted">From: GreenFarm Co | To: Roastery Inc</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-primary">Manufacturing</span>
+                                                <div class="text-muted small mt-1">Processing at Factory #4</div>
+                                            </div>
+                                        </a>
+                                        <a href="#"
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                            onclick="showScreen('tracking-detail')">
+                                            <div>
+                                                <h6 class="mb-0">Luxury Watches - Collection #LX-123</h6>
+                                                <small class="text-muted">From: SwissWatch Ltd | To:
+                                                    LuxuryRetail</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-info">Quality Check</span>
+                                                <div class="text-muted small mt-1">Distribution Center, Geneva</div>
+                                            </div>
+                                        </a>
+                                        <a href="#"
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                            onclick="showScreen('tracking-detail')">
+                                            <div>
+                                                <h6 class="mb-0">Electronics Components - Shipment #EL-456</h6>
+                                                <small class="text-muted">From: TechParts Inc | To: AssemblyLine
+                                                    Co</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-success">Delivered</span>
+                                                <div class="text-muted small mt-1">Received at Warehouse</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Supply Chain Visualization</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-10">
+                                    <div class="product-track-step completed">
+                                        <div class="step-icon">
+                                            <i class="bi bi-check"></i>
+                                        </div>
+                                        <h6>Manufacturing</h6>
+                                        <p class="text-muted small">Product manufactured at Factory #4. Quality checks
+                                            passed.</p>
+                                        <small class="text-muted">Completed: Oct 15, 2023</small>
+                                    </div>
+
+                                    <div class="product-track-step completed">
+                                        <div class="step-icon">
+                                            <i class="bi bi-check"></i>
+                                        </div>
+                                        <h6>Packaging & Labeling</h6>
+                                        <p class="text-muted small">Product packaged and labeled with digital identity
+                                            on-chain.</p>
+                                        <small class="text-muted">Completed: Oct 18, 2023</small>
+                                    </div>
+
+                                    <div class="product-track-step active">
+                                        <div class="step-icon">
+                                            <i class="bi bi-geo-alt"></i>
+                                        </div>
+                                        <h6>In Transit</h6>
+                                        <p class="text-muted small">Shipment departed Shanghai Port. Estimated arrival:
+                                            Nov 5, 2023.</p>
+                                        <small class="text-muted">Current: Since Oct 22, 2023</small>
+                                    </div>
+
+                                    <div class="product-track-step">
+                                        <div class="step-icon">
+                                            4
+                                        </div>
+                                        <h6>Customs Clearance</h6>
+                                        <p class="text-muted small">Awaiting customs clearance at destination port.</p>
+                                        <small class="text-muted">Pending</small>
+                                    </div>
+
+                                    <div class="product-track-step">
+                                        <div class="step-icon">
+                                            5
+                                        </div>
+                                        <h6>Delivery to Retailer</h6>
+                                        <p class="text-muted small">Final delivery to retail warehouse.</p>
+                                        <small class="text-muted">Pending</small>
+                                    </div>
+
+                                    <div class="product-track-step">
+                                        <div class="step-icon">
+                                            6
+                                        </div>
+                                        <h6>Payment Release</h6>
+                                        <p class="text-muted small">Smart contract will automatically release escrow
+                                            funds.</p>
+                                        <small class="text-muted">Pending</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Smart Contracts Screen -->
+            <div id="contracts-screen" class="screen">
+                <div class="container py-4">
+                    <h3 class="mb-4">Smart Contracts</h3>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="card-title mb-1">Active Escrow Contracts</h5>
+                                    <p class="text-muted mb-0">Smart contracts holding funds until delivery confirmation
+                                    </p>
+                                </div>
+                                <button class="btn btn-primary" onclick="showScreen('new-contract')">
+                                    <i class="bi bi-plus-circle me-2"></i> New Contract
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <span class="badge bg-warning">Active</span>
+                                            <h5 class="card-title mt-2">#SC-7892</h5>
+                                        </div>
+                                        <div class="text-end">
+                                            <h4>$12,500</h4>
+                                            <small class="text-muted">Escrow Amount</small>
+                                        </div>
+                                    </div>
+                                    <p class="card-text">Medical supplies shipment from PharmaCorp to MedSupply Chain.
+                                    </p>
+                                    <div class="mb-3">
+                                        <small class="text-muted">Parties:</small>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Manufacturer</span>
+                                            <span class="fw-semibold">PharmaCorp</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Logistics</span>
+                                            <span class="fw-semibold">GlobalLogistics Inc</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Retailer</span>
+                                            <span class="fw-semibold">MedSupply Chain</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-outline-primary" onclick="showScreen('contract-detail')">
+                                            View Contract Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <span class="badge bg-success">Completed</span>
+                                            <h5 class="card-title mt-2">#SC-7891</h5>
+                                        </div>
+                                        <div class="text-end">
+                                            <h4>$8,200</h4>
+                                            <small class="text-muted">Escrow Released</small>
+                                        </div>
+                                    </div>
+                                    <p class="card-text">Organic coffee beans from GreenFarm Co to Roastery Inc.</p>
+                                    <div class="mb-3">
+                                        <small class="text-muted">Parties:</small>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Manufacturer</span>
+                                            <span class="fw-semibold">GreenFarm Co</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Logistics</span>
+                                            <span class="fw-semibold">FastTrack Logistics</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Retailer</span>
+                                            <span class="fw-semibold">Roastery Inc</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-outline-primary" onclick="showScreen('contract-detail')">
+                                            View Contract Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <span class="badge bg-primary">Draft</span>
+                                            <h5 class="card-title mt-2">#SC-7893</h5>
+                                        </div>
+                                        <div class="text-end">
+                                            <h4>$25,000</h4>
+                                            <small class="text-muted">Pending Signature</small>
+                                        </div>
+                                    </div>
+                                    <p class="card-text">Luxury watches from SwissWatch Ltd to LuxuryRetail stores.</p>
+                                    <div class="mb-3">
+                                        <small class="text-muted">Parties:</small>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Manufacturer</span>
+                                            <span class="fw-semibold">SwissWatch Ltd</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Logistics</span>
+                                            <span class="fw-semibold">SecureShipping Co</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Retailer</span>
+                                            <span class="fw-semibold">LuxuryRetail</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-outline-primary" onclick="showScreen('contract-detail')">
+                                            Sign Contract
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Screen -->
+            <div id="profile-screen" class="screen">
+                <div class="container py-4">
+                    <h3 class="mb-4">Profile & Settings</h3>
+
+                    <div class="row">
+                        <div class="col-lg-4 mb-4">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <div class="mx-auto mb-3"
+                                        style="width: 100px; height: 100px; background-color: rgba(111, 188, 240, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; color: var(--sui-blue);">
+                                        <i class="bi bi-person"></i>
+                                    </div>
+                                    <h5 id="profile-name">User Account</h5>
+                                    <p class="text-muted" id="profile-role">Supply Chain Manager</p>
+                                    <div class="wallet-address mx-auto mb-3" id="profile-wallet">
+                                        0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b
+                                    </div>
+                                    <button class="btn btn-outline-primary w-100" onclick="editProfile()">
+                                        <i class="bi bi-pencil me-2"></i> Edit Profile
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Connected Wallets</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="wallet-icon me-3">
+                                                <i class="bi bi-wallet2"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Thalexa Wallet</h6>
+                                                <small class="text-muted">Primary</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-success">Active</span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="wallet-icon me-3">
+                                                <i class="bi bi-shield-check"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">SafePal</h6>
+                                                <small class="text-muted">Hardware Wallet</small>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-secondary">Not Connected</span>
+                                    </div>
+
+                                    <button class="btn btn-outline-primary w-100 mt-3" onclick="showScreen('login')">
+                                        <i class="bi bi-plus-circle me-2"></i> Connect Another Wallet
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-8">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Account Settings</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Display Name</label>
+                                        <input type="text" class="form-control" id="display-name"
+                                            value="Supply Chain Manager">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" id="email-address"
+                                            value="manager@thalexa.com">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Company</label>
+                                        <input type="text" class="form-control" id="company"
+                                            value="Global Logistics Inc">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Role in Supply Chain</label>
+                                        <select class="form-select" id="supply-chain-role">
+                                            <option selected>Logistics Provider</option>
+                                            <option>Manufacturer</option>
+                                            <option>Retailer</option>
+                                            <option>Distributor</option>
+                                            <option>Consumer</option>
+                                        </select>
+                                    </div>
+
+                                    <button class="btn btn-primary" onclick="saveProfile()">
+                                        <i class="bi bi-check-circle me-2"></i> Save Changes
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Security Settings</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Change Password</label>
+                                        <input type="password" class="form-control" id="new-password"
+                                            placeholder="New Password">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <input type="password" class="form-control" id="confirm-new-password"
+                                            placeholder="Confirm New Password">
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="two-factor-auth">
+                                        <label class="form-check-label" for="two-factor-auth">
+                                            Enable Two-Factor Authentication
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="email-notifications"
+                                            checked>
+                                        <label class="form-check-label" for="email-notifications">
+                                            Receive email notifications for contract updates
+                                        </label>
+                                    </div>
+
+                                    <button class="btn btn-primary" onclick="updateSecurity()">
+                                        <i class="bi bi-shield-check me-2"></i> Update Security Settings
+                                    </button>
+
+                                    <hr class="my-4">
+
+                                    <h6 class="text-danger">Danger Zone</h6>
+                                    <p class="small text-muted">These actions are irreversible. Proceed with caution.
+                                    </p>
+                                    <button class="btn btn-outline-danger" onclick="disconnectWallet()">
+                                        <i class="bi bi-power me-2"></i> Disconnect Wallet
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional screens would be added here for Send, Receive, Contract Detail, etc. -->
+        </main>
+
+        <!-- Mobile Bottom Navigation -->
+        <div class="mobile-bottom-nav">
+            <a href="#" class="mobile-nav-item" onclick="showScreen('home')">
+                <i class="bi bi-house"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="mobile-nav-item" onclick="showScreen('wallet')">
+                <i class="bi bi-wallet2"></i>
+                <span>Wallet</span>
+            </a>
+            <a href="#" class="mobile-nav-item" onclick="showScreen('tracking')">
+                <i class="bi bi-geo-alt"></i>
+                <span>Tracking</span>
+            </a>
+            <a href="#" class="mobile-nav-item" onclick="showScreen('contracts')">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>Contracts</span>
+            </a>
+            <a href="#" class="mobile-nav-item" onclick="showScreen('profile')">
+                <i class="bi bi-person"></i>
+                <span>Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Application State
+        const appState = {
+            currentScreen: 'home',
+            isWalletConnected: false,
+            walletAddress: null,
+            walletName: 'My Thalexa Wallet',
+            walletBalance: 45.75,
+            suiPrice: 1.25, // Simulated SUI price in USD
+            recoveryPhrase: ''
+        };
+
+        // Words for generating recovery phrase
+        const bip39Words = [
+            'abandon', 'ability', 'able', 'about', 'above', 'absent', 'absorb', 'abstract', 'absurd', 'abuse',
+            'access', 'accident', 'account', 'accuse', 'achieve', 'acid', 'acoustic', 'acquire', 'across', 'act',
+            'action', 'actor', 'actress', 'actual', 'adapt', 'add', 'addict', 'address', 'adjust', 'admit',
+            'adult', 'advance', 'advice', 'aerobic', 'affair', 'afford', 'afraid', 'again', 'age', 'agent',
+            'agree', 'ahead', 'aim', 'air', 'airport', 'aisle', 'alarm', 'album', 'alcohol', 'alert'
+        ];
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function () {
+            updateWalletStatus();
+            setActiveNav();
+            checkMobileView();
+
+            // Add resize listener for mobile view
+            window.addEventListener('resize', checkMobileView);
+        });
+
+        // Show a specific screen and hide others
+        function showScreen(screenId) {
+            // Hide all screens
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Show the selected screen
+            const targetScreen = document.getElementById(screenId + '-screen');
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                appState.currentScreen = screenId;
+
+                // Update navigation active state
+                setActiveNav();
+
+                // If showing wallet screen, update wallet info
+                if (screenId === 'wallet') {
+                    updateWalletInfo();
+                }
+            }
+        }
+
+        // Set active navigation button
+        function setActiveNav() {
+            // Desktop navigation
+            const navButtons = document.querySelectorAll('.nav-icon-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            const currentNav = document.getElementById('nav-' + appState.currentScreen);
+            if (currentNav) {
+                currentNav.classList.add('active');
+            }
+
+            // Mobile navigation
+            const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+            mobileNavItems.forEach(item => {
+                item.classList.remove('active');
+
+                // Check if this nav item corresponds to current screen
+                const icon = item.querySelector('i');
+                if (icon) {
+                    const iconClass = icon.classList[1]; // Get the icon class
+                    // Map icon classes to screens
+                    const iconToScreen = {
+                        'bi-house': 'home',
+                        'bi-wallet2': 'wallet',
+                        'bi-geo-alt': 'tracking',
+                        'bi-file-earmark-text': 'contracts',
+                        'bi-person': 'profile'
+                    };
+
+                    if (iconToScreen[iconClass] === appState.currentScreen) {
+                        item.classList.add('active');
+                    }
+                }
+            });
+        }
+
+        // Check if we're on mobile and adjust UI
+        function checkMobileView() {
+            if (window.innerWidth <= 768) {
+                // On mobile, hide desktop wallet dropdown text
+                document.getElementById('wallet-status').textContent = 'Connect';
+            } else {
+                // On desktop, show full text
+                updateWalletStatus();
+            }
+        }
+
+        // Update wallet connection status
+        function updateWalletStatus() {
+            const walletStatus = document.getElementById('wallet-status');
+            if (appState.isWalletConnected) {
+                walletStatus.textContent = 'Connected';
+                if (appState.walletAddress) {
+                    // Truncate wallet address for display
+                    const truncatedAddress = appState.walletAddress.substring(0, 6) + '...' + appState.walletAddress.substring(appState.walletAddress.length - 4);
+                    document.getElementById('connected-wallet-address').textContent = appState.walletAddress;
+                    document.getElementById('profile-wallet').textContent = appState.walletAddress;
+                }
+            } else {
+                walletStatus.textContent = window.innerWidth <= 768 ? 'Connect' : 'Connect Wallet';
+            }
+        }
+
+        // Connect wallet simulation
+        function connectWallet(walletType) {
+            // Simulate wallet connection
+            appState.isWalletConnected = true;
+
+            // Generate a fake wallet address for demo
+            const hexChars = '0123456789abcdef';
+            let address = '0x';
+            for (let i = 0; i < 40; i++) {
+                address += hexChars[Math.floor(Math.random() * hexChars.length)];
+            }
+            appState.walletAddress = address;
+
+            // Update UI
+            updateWalletStatus();
+            updateWalletInfo();
+
+            // Show success message
+            alert(`Successfully connected with ${walletType.charAt(0).toUpperCase() + walletType.slice(1)} wallet!`);
+
+            // Navigate to wallet screen
+            showScreen('wallet');
+        }
+
+        // Update wallet information
+        function updateWalletInfo() {
+            if (appState.isWalletConnected) {
+                // Update wallet balance display
+                document.getElementById('wallet-balance').textContent = appState.walletBalance.toFixed(2);
+                document.getElementById('sui-balance').textContent = appState.walletBalance.toFixed(2);
+
+                // Calculate USD value
+                const usdValue = appState.walletBalance * appState.suiPrice;
+                document.getElementById('usd-balance').textContent = usdValue.toFixed(2);
+                document.getElementById('sui-usd-value').textContent = (appState.walletBalance * appState.suiPrice).toFixed(2);
+
+                // Update wallet name
+                document.getElementById('connected-wallet-name').textContent = appState.walletName;
+                document.getElementById('profile-name').textContent = appState.walletName;
+            }
+        }
+
+        // Generate a recovery phrase
+        function generatePhrase() {
+            const phraseContainer = document.getElementById('recovery-phrase');
+            appState.recoveryPhrase = '';
+
+            // Generate 12 random words
+            const words = [];
+            for (let i = 0; i < 12; i++) {
+                const randomIndex = Math.floor(Math.random() * bip39Words.length);
+                words.push(bip39Words[randomIndex]);
+            }
+
+            appState.recoveryPhrase = words.join(' ');
+
+            // Display the phrase
+            phraseContainer.innerHTML = '';
+            words.forEach((word, index) => {
+                const wordElement = document.createElement('span');
+                wordElement.className = 'phrase-word';
+                wordElement.textContent = `${index + 1}. ${word}`;
+                phraseContainer.appendChild(wordElement);
+            });
+        }
+
+        // Create a new wallet
+        function createWallet() {
+            const walletName = document.getElementById('wallet-name').value;
+            const password = document.getElementById('wallet-password').value;
+            const confirmPassword = document.getElementById('wallet-password-confirm').value;
+            const confirmSaved = document.getElementById('confirm-phrase-saved').checked;
+
+            // Validate inputs
+            if (!walletName) {
+                alert('Please enter a wallet name');
+                return;
+            }
+
+            if (!appState.recoveryPhrase) {
+                alert('Please generate a recovery phrase first');
+                return;
+            }
+
+            if (!confirmSaved) {
+                alert('Please confirm that you have saved your recovery phrase');
+                return;
+            }
+
+            if (!password || password.length < 8) {
+                alert('Password must be at least 8 characters');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            // Set wallet info
+            appState.walletName = walletName;
+            appState.isWalletConnected = true;
+
+            // Generate a fake wallet address for demo
+            const hexChars = '0123456789abcdef';
+            let address = '0x';
+            for (let i = 0; i < 40; i++) {
+                address += hexChars[Math.floor(Math.random() * hexChars.length)];
+            }
+            appState.walletAddress = address;
+
+            // Update UI
+            updateWalletStatus();
+            updateWalletInfo();
+
+            // Show success message
+            alert('Wallet created successfully! Please keep your recovery phrase safe.');
+
+            // Navigate to wallet screen
+            showScreen('wallet');
+        }
+
+        // Import an existing wallet
+        function importWallet() {
+            const phrase = document.getElementById('import-phrase').value;
+            const walletName = document.getElementById('import-wallet-name').value;
+            const password = document.getElementById('import-password').value;
+
+            // Validate inputs
+            if (!phrase) {
+                alert('Please enter your recovery phrase');
+                return;
+            }
+
+            if (!password || password.length < 8) {
+                alert('Password must be at least 8 characters');
+                return;
+            }
+
+            // Set wallet info
+            appState.walletName = walletName || 'Imported Wallet';
+            appState.isWalletConnected = true;
+            appState.recoveryPhrase = phrase;
+
+            // Generate a fake wallet address for demo
+            const hexChars = '0123456789abcdef';
+            let address = '0x';
+            for (let i = 0; i < 40; i++) {
+                address += hexChars[Math.floor(Math.random() * hexChars.length)];
+            }
+            appState.walletAddress = address;
+
+            // Update UI
+            updateWalletStatus();
+            updateWalletInfo();
+
+            // Show success message
+            alert('Wallet imported successfully!');
+
+            // Navigate to wallet screen
+            showScreen('wallet');
+        }
+
+        // Disconnect wallet
+        function disconnectWallet() {
+            if (confirm('Are you sure you want to disconnect your wallet?')) {
+                appState.isWalletConnected = false;
+                appState.walletAddress = null;
+                updateWalletStatus();
+                showScreen('home');
+                alert('Wallet disconnected successfully.');
+            }
+        }
+
+        // Track a product
+        function trackProduct() {
+            const productId = document.getElementById('product-id').value;
+            if (!productId) {
+                alert('Please enter a product ID');
+                return;
+            }
+
+            alert(`Tracking product: ${productId}`);
+            showScreen('tracking-detail');
+        }
+
+        // Edit profile
+        function editProfile() {
+            document.getElementById('display-name').focus();
+        }
+
+        // Save profile
+        function saveProfile() {
+            const displayName = document.getElementById('display-name').value;
+            const email = document.getElementById('email-address').value;
+            const company = document.getElementById('company').value;
+            const role = document.getElementById('supply-chain-role').value;
+
+            // Update profile display
+            document.getElementById('profile-name').textContent = displayName;
+            document.getElementById('profile-role').textContent = role;
+
+            alert('Profile updated successfully!');
+        }
+
+        // Update security settings
+        function updateSecurity() {
+            alert('Security settings updated successfully!');
+        }
+
+        // Simulate tracking detail screen
+        function showTrackingDetail() {
+            alert('This would show detailed tracking information for a specific product.');
+            // In a full implementation, this would navigate to a detailed tracking screen
+        }
+
+        // Simulate contract detail screen
+        function showContractDetail() {
+            alert('This would show detailed contract information including terms, parties, and escrow status.');
+            // In a full implementation, this would navigate to a detailed contract screen
+        }
+
+        // Initialize with a sample wallet for demo purposes
+        window.onload = function () {
+            // Auto-generate a wallet for demo
+            const hexChars = '0123456789abcdef';
+            let address = '0x';
+            for (let i = 0; i < 40; i++) {
+                address += hexChars[Math.floor(Math.random() * hexChars.length)];
+            }
+
+            // For demo purposes, set a connected wallet
+            appState.isWalletConnected = true;
+            appState.walletAddress = address;
+            updateWalletStatus();
+            updateWalletInfo();
+        };
+    </script>
+</body>
+
+</html>

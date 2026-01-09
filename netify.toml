@@ -1,0 +1,29 @@
+[build]
+  publish = "."
+  command = "echo 'Build complete'"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.gstatic.com https://*.firebaseio.com https://unpkg.com;
+      style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+      font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
+      img-src 'self' data: https:;
+      connect-src 'self' https://*.netlify.app https://*.supabase.co https://*.firebaseio.com https://fullnode.mainnet.sui.io https://fullnode.testnet.sui.io;
+    """
+
+[dev]
+  port = 8888

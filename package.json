@@ -1,0 +1,20 @@
+{
+    "name": "thalexa",
+    "version": "1.0.0",
+    "description": "Production-ready decentralized supply chain platform",
+    "main": "index.html",
+    "scripts": {
+        "build": "echo 'Build complete'",
+        "dev": "echo 'Open index.html in browser'",
+        "deploy": "netlify deploy --prod"
+    },
+    "keywords": [
+        "blockchain",
+        "supply-chain",
+        "sui",
+        "web3",
+        "zklogin"
+    ],
+    "author": "Thalexa",
+    "license": "MIT"
+}
